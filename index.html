@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Attendance Dashboard</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="hdr">
+    <div><h1>Lab Attendance Dashboard</h1></div>
+    <div class="hdr-right">
+      <span id="lastUpdated">—</span>
+      <button id="refreshBtn">Refresh</button>
+    </div>
+  </header>
+
+  <main class="main container">
+    <section class="card summary">
+      <div>Total rows: <strong id="total">0</strong></div>
+      <div>Labs: <strong id="labCount">0</strong></div>
+      <div>
+        <a id="downloadLink" class="btn" target="_blank">Download CSV</a>
+        <button id="clearBtn" class="btn ghost">Clear (protected)</button>
+      </div>
+    </section>
+
+    <section id="tables"></section>
+  </main>
+
+  <footer class="footer">Prototype • Data: Google Sheets • Auto-refresh every 5s</footer>
+  <script src="./script.js"></script>
+</body>
+</html>
