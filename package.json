@@ -1,0 +1,29 @@
+{
+  "name": "rfid-attendance-dashboard",
+  "version": "1.0.0",
+  "description": "Modern RFID Attendance Dashboard with real-time updates and minimalistic design",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 -m http.server 8000",
+    "start": "python3 -m http.server 8000",
+    "build": "echo 'Static site - no build required'",
+    "vercel-build": "echo 'Static site - no build required'"
+  },
+  "keywords": [
+    "rfid",
+    "attendance",
+    "dashboard",
+    "real-time",
+    "minimalistic",
+    "google-sheets"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/rfid-attendance-dashboard.git"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
