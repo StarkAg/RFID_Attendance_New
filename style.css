@@ -165,6 +165,17 @@ html, body {
   padding: var(--space-xxl) var(--space-lg);
 }
 
+/* Ensure dark background applies to main content and empty states */
+.main {
+  background: var(--bg);
+}
+
+#tables,
+.tables-container,
+.empty-state {
+  background: var(--bg);
+}
+
 /* Summary Card - Minimal */
 .summary {
   background: var(--bg);
@@ -509,21 +520,6 @@ html, body {
 
 .dark-theme .date-arrow-btn:hover {
   background: var(--gray-dark);
-}
-
-.dark-theme .date-display {
-  background: var(--black);
-  color: var(--white);
-}
-
-.dark-theme .date-arrow-btn {
-  background: var(--black);
-  color: var(--white);
-}
-
-.dark-theme .date-navigator {
-  background: var(--black);
-  border-color: var(--gray-dark);
 }
 
 .filter-btn {
