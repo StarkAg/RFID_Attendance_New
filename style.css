@@ -867,6 +867,15 @@ html, body {
   color: var(--black);
 }
 
+.dark-theme .lab-card {
+  background: var(--black);
+  border-color: var(--gray-dark);
+}
+
+.dark-theme .lab-card:hover {
+  border-color: var(--white);
+}
+
 .dark-theme .lab-header {
   background: var(--black);
   border-color: var(--gray-dark);
@@ -874,6 +883,14 @@ html, body {
 
 .dark-theme .attendance-table thead {
   background: var(--gray-dark);
+}
+
+.dark-theme .table-container {
+  background: var(--black);
+}
+
+.dark-theme .attendance-table {
+  background: var(--black);
 }
 
 .dark-theme .attendance-row:hover {
