@@ -497,6 +497,10 @@ html, body {
   border-right: 1px solid var(--border);
 }
 
+.dark-theme .date-display {
+  color: var(--white);
+}
+
 .dark-theme .date-slider-btn.active {
   background: var(--black);
   color: var(--white);
