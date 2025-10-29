@@ -497,10 +497,6 @@ html, body {
   border-right: 1px solid var(--border);
 }
 
-.dark-theme .date-display {
-  color: var(--white);
-}
-
 .dark-theme .date-slider-btn.active {
   background: var(--black);
   color: var(--white);
@@ -513,6 +509,21 @@ html, body {
 
 .dark-theme .date-arrow-btn:hover {
   background: var(--gray-dark);
+}
+
+.dark-theme .date-display {
+  background: var(--black);
+  color: var(--white);
+}
+
+.dark-theme .date-arrow-btn {
+  background: var(--black);
+  color: var(--white);
+}
+
+.dark-theme .date-navigator {
+  background: var(--black);
+  border-color: var(--gray-dark);
 }
 
 .filter-btn {
