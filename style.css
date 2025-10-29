@@ -32,8 +32,17 @@
   padding: 0;
 }
 
-html, body {
+html {
   height: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--bg);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
   font-family: var(--font-primary);
   background: var(--bg);
   color: var(--text);
@@ -43,6 +52,7 @@ html, body {
   letter-spacing: 0.05em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 /* Header - Ultra Minimal */
@@ -163,11 +173,17 @@ html, body {
   max-width: 1200px;
   margin: 0 auto;
   padding: var(--space-xxl) var(--space-lg);
+  width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 /* Ensure dark background applies to main content and empty states */
 .main {
   background: var(--bg);
+  min-height: calc(100vh - 200px); /* Account for header and footer */
+  width: 100%;
+  overflow-x: hidden;
 }
 
 #tables,
@@ -744,6 +760,11 @@ html, body {
   --text: var(--white);
   --text-secondary: var(--gray-medium);
   --border: var(--gray-dark);
+}
+
+.dark-theme html,
+.dark-theme body {
+  background: var(--black);
 }
 
 .dark-theme .hdr {
