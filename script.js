@@ -14,8 +14,7 @@ let isDarkMode = false;
 let notificationsEnabled = true;
 let currentFilters = {
   search: '',
-  dateFrom: '',
-  dateTo: ''
+  dateFilter: 'today' // 'all', 'today', 'tomorrow'
 };
 
 // Theme-aware favicon (SVG data URLs)
@@ -145,11 +144,47 @@ function initNotifications(){
   }
 }
 
+// Helper function to get today's date in IST (Asia/Kolkata)
+function getTodayIST(){
+  const now = new Date();
+  // Convert to IST timezone
+  const istDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+  return istDate;
+}
+
+// Helper function to get tomorrow's date in IST
+function getTomorrowIST(){
+  const today = getTodayIST();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return tomorrow;
+}
+
+// Helper function to format date as YYYY-MM-DD
+function formatDateIST(date){
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+// Helper function to get date string from epoch in IST
+function getDateStringIST(epoch){
+  const date = new Date(epoch * 1000);
+  // Use Intl.DateTimeFormat for reliable IST conversion
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Kolkata',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+  return formatter.format(date); // Returns YYYY-MM-DD format
+}
+
 // Search and filter functions
 function applyFilters(){
   const searchTerm = currentFilters.search.toLowerCase().trim();
-  const dateFrom = currentFilters.dateFrom;
-  const dateTo = currentFilters.dateTo;
+  const dateFilter = currentFilters.dateFilter;
   
   filteredData = attendanceData.filter(item => {
     // Search filter - improved RA number matching
@@ -164,17 +199,34 @@ function applyFilters(){
                      labString.includes(searchTerm);
     }
     
-    // Date filter
+    // Date filter - filter by today/tomorrow/all
     let matchesDate = true;
-    if (dateFrom || dateTo) {
-      const itemDate = new Date(item.epoch * 1000).toISOString().split('T')[0];
-      if (dateFrom && itemDate < dateFrom) matchesDate = false;
-      if (dateTo && itemDate > dateTo) matchesDate = false;
+    if (dateFilter !== 'all') {
+      const itemDate = getDateStringIST(item.epoch);
+      let targetDate;
+      
+      if (dateFilter === 'today') {
+        targetDate = formatDateIST(getTodayIST());
+      } else if (dateFilter === 'tomorrow') {
+        targetDate = formatDateIST(getTomorrowIST());
+      }
+      
+      matchesDate = itemDate === targetDate;
     }
     
     return matchesSearch && matchesDate;
   });
+  
+  // Update total count to reflect filtered data
+  updateTotalCount();
   renderFilteredTables();
+}
+
+function updateTotalCount(){
+  const totalElement = el('total');
+  if(filteredData && filteredData.length >= 0){
+    totalElement.textContent = filteredData.length;
+  }
 }
 
 function renderFilteredTables(){
@@ -233,12 +285,20 @@ function renderFilteredTables(){
 }
 
 function clearFilters(){
-  currentFilters = { search: '', dateFrom: '', dateTo: '' };
+  currentFilters = { search: '', dateFilter: 'today' };
   el('searchInput').value = '';
-  el('dateFrom').value = '';
-  el('dateTo').value = '';
+  
+  // Reset date slider to 'today'
+  const dateButtons = document.querySelectorAll('.date-slider-btn');
+  dateButtons.forEach(btn => {
+    btn.classList.remove('active');
+    if(btn.dataset.date === 'today'){
+      btn.classList.add('active');
+    }
+  });
+  
   filteredData = [...attendanceData];
-  renderFilteredTables();
+  applyFilters();
 }
 
 function showAnalyticsDashboard(){
@@ -383,7 +443,7 @@ function renderTables(rows){
   }
   lastRecordCount = currentCount;
   
-  el('total').textContent = attendanceData.length;
+  // Don't set total here - it will be set by applyFilters based on filtered data
   const groups = groupByLab(attendanceData);
   el('labCount').textContent = groups.size;
   
@@ -393,7 +453,7 @@ function renderTables(rows){
   // Initialize filtered data
   filteredData = [...attendanceData];
   
-  // Apply current filters
+  // Apply current filters (this will update the total count)
   applyFilters();
   
   highlightNewest();
@@ -508,16 +568,20 @@ document.addEventListener('DOMContentLoaded', ()=> {
     applyFilters();
   });
   
-  // Date filters
-  el('dateFrom').addEventListener('change', (e) => {
-    currentFilters.dateFrom = e.target.value;
+  // Date filter slider
+  const dateButtons = document.querySelectorAll('.date-slider-btn');
+  dateButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Remove active class from all buttons
+      dateButtons.forEach(b => b.classList.remove('active'));
+      // Add active class to clicked button
+      btn.classList.add('active');
+      // Update filter
+      currentFilters.dateFilter = btn.dataset.date;
+      applyFilters();
+    });
   });
   
-  el('dateTo').addEventListener('change', (e) => {
-    currentFilters.dateTo = e.target.value;
-  });
-  
-  el('applyFilters').addEventListener('click', applyFilters);
   el('clearFilters').addEventListener('click', clearFilters);
   
   // Initialize

@@ -407,21 +407,64 @@ html, body {
   flex-wrap: wrap;
 }
 
-.date-filter {
-  padding: var(--space-sm) var(--space-md);
+/* Date Slider - Minimal */
+.date-slider-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.date-slider-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.date-slider {
+  display: flex;
+  gap: 0;
   border: 1px solid var(--border);
   border-radius: 0;
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--text);
+  overflow: hidden;
+}
+
+.date-slider-btn {
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  border-right: 1px solid var(--border);
   background: var(--bg);
-  letter-spacing: 0.05em;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.date-filter:focus {
-  outline: none;
+.date-slider-btn:last-child {
+  border-right: none;
+}
+
+.date-slider-btn:hover {
+  background: var(--gray-light);
+}
+
+.date-slider-btn.active {
+  background: var(--black);
+  color: var(--white);
   border-color: var(--black);
+}
+
+.dark-theme .date-slider-btn.active {
+  background: var(--white);
+  color: var(--black);
+}
+
+.dark-theme .date-slider-btn:hover {
+  background: var(--gray-dark);
 }
 
 .filter-btn {
@@ -736,16 +779,6 @@ html, body {
   border-color: var(--white);
 }
 
-.dark-theme .date-filter {
-  background: var(--black);
-  color: var(--white);
-  border-color: var(--gray-dark);
-}
-
-.dark-theme .date-filter:focus {
-  border-color: var(--white);
-}
-
 .dark-theme .lab-selector {
   background: var(--black);
   color: var(--white);
@@ -916,9 +949,26 @@ html, body {
     gap: var(--space-sm);
   }
   
-  .date-filter {
+  .date-slider-container {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-sm);
+  }
+  
+  .date-slider-label {
+    font-size: 11px;
+  }
+  
+  .date-slider {
+    width: 100%;
+    display: flex;
+  }
+  
+  .date-slider-btn {
+    flex: 1;
     padding: var(--space-md);
-    font-size: 16px; /* Prevents zoom on iOS */
+    font-size: 12px;
     min-height: 48px;
   }
   
@@ -926,6 +976,7 @@ html, body {
     padding: var(--space-md) var(--space-lg);
     font-size: 14px;
     min-height: 48px;
+    width: 100%;
   }
   
   .lab-selector {
@@ -1018,12 +1069,6 @@ html, body {
   
   .search-input {
     padding: var(--space-sm) var(--space-sm) var(--space-sm) 40px;
-    font-size: 16px;
-    min-height: 44px;
-  }
-  
-  .date-filter {
-    padding: var(--space-sm);
     font-size: 16px;
     min-height: 44px;
   }

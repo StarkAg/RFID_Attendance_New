@@ -93,10 +93,15 @@
           <button id="clearSearch" class="clear-search" title="Clear search">×</button>
         </div>
         <div class="filter-controls">
-          <input type="date" id="dateFrom" class="date-filter" title="From date">
-          <input type="date" id="dateTo" class="date-filter" title="To date">
-          <button id="applyFilters" class="btn filter-btn">Apply Filters</button>
-          <button id="clearFilters" class="btn filter-btn secondary">Clear</button>
+          <div class="date-slider-container">
+            <label class="date-slider-label">Date Filter:</label>
+            <div class="date-slider">
+              <button class="date-slider-btn" data-date="all" id="dateAll">All</button>
+              <button class="date-slider-btn active" data-date="today" id="dateToday">Today</button>
+              <button class="date-slider-btn" data-date="tomorrow" id="dateTomorrow">Tomorrow</button>
+            </div>
+          </div>
+          <button id="clearFilters" class="btn filter-btn secondary">Clear Search</button>
         </div>
       </div>
     </section>
