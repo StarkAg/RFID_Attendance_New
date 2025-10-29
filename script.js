@@ -18,6 +18,16 @@ let currentFilters = {
   dateTo: ''
 };
 
+// Theme-aware favicon (SVG data URLs)
+const FAVICON_LIGHT = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="12" ry="12" fill="white" stroke="black" stroke-width="4"/><circle cx="28" cy="32" r="6" fill="black"/><path d="M36 28c4 0 8 4 8 8" fill="none" stroke="black" stroke-width="4" stroke-linecap="round"/><path d="M36 22c7 0 14 7 14 14" fill="none" stroke="black" stroke-width="4" stroke-linecap="round"/></svg>';
+const FAVICON_DARK = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="12" ry="12" fill="black" stroke="white" stroke-width="4"/><circle cx="28" cy="32" r="6" fill="white"/><path d="M36 28c4 0 8 4 8 8" fill="none" stroke="white" stroke-width="4" stroke-linecap="round"/><path d="M36 22c7 0 14 7 14 14" fill="none" stroke="white" stroke-width="4" stroke-linecap="round"/></svg>';
+
+function applyFavicon(){
+  const link = document.getElementById('favicon');
+  if(!link) return;
+  link.setAttribute('href', isDarkMode ? FAVICON_DARK : FAVICON_LIGHT);
+}
+
 function el(id){ return document.getElementById(id); }
 
 // Modern sleek sound notification function
@@ -257,6 +267,7 @@ function toggleTheme(){
   
   // Save theme preference
   localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+  applyFavicon();
 }
 
 function initTheme(){
@@ -274,6 +285,7 @@ function initTheme(){
     el('sunIcon').style.display = 'block';
     el('moonIcon').style.display = 'none';
   }
+  applyFavicon();
 }
 
 async function fetchRowsFromServer(){
