@@ -459,8 +459,9 @@ html, body {
 }
 
 .dark-theme .date-slider-btn.active {
-  background: var(--white);
-  color: var(--black);
+  background: var(--black);
+  color: var(--white);
+  border-color: var(--white);
 }
 
 .dark-theme .date-slider-btn:hover {
