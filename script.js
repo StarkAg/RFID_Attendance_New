@@ -14,7 +14,7 @@ let isDarkMode = false;
 let notificationsEnabled = true;
 let currentFilters = {
   search: '',
-  dateFilter: 'today' // 'all', 'today', 'tomorrow'
+  dateFilter: null // null = 'all', otherwise it's a Date object
 };
 
 // Theme-aware favicon (SVG data URLs)
@@ -152,12 +152,11 @@ function getTodayIST(){
   return istDate;
 }
 
-// Helper function to get tomorrow's date in IST
-function getTomorrowIST(){
-  const today = getTodayIST();
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  return tomorrow;
+// Helper function to add days to a date
+function addDays(date, days){
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
 }
 
 // Helper function to format date as YYYY-MM-DD
@@ -166,6 +165,32 @@ function formatDateIST(date){
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
+}
+
+// Helper function to format date for display (e.g., "Oct 29, 2025" or "Today")
+function formatDateDisplay(date){
+  const today = getTodayIST();
+  const todayStr = formatDateIST(today);
+  const dateStr = formatDateIST(date);
+  
+  if(dateStr === todayStr){
+    return 'Today';
+  }
+  
+  const yesterday = addDays(today, -1);
+  const yesterdayStr = formatDateIST(yesterday);
+  if(dateStr === yesterdayStr){
+    return 'Yesterday';
+  }
+  
+  // Format as "Mon DD, YYYY" (e.g., "Oct 29, 2025")
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'Asia/Kolkata'
+  });
+  return formatter.format(date);
 }
 
 // Helper function to get date string from epoch in IST
@@ -179,6 +204,54 @@ function getDateStringIST(epoch){
     day: '2-digit'
   });
   return formatter.format(date); // Returns YYYY-MM-DD format
+}
+
+// Update date display in UI
+function updateDateDisplay(){
+  const dateDisplay = el('dateDisplay');
+  if(!dateDisplay) return;
+  
+  if(currentFilters.dateFilter === null){
+    dateDisplay.textContent = 'All';
+  } else {
+    dateDisplay.textContent = formatDateDisplay(currentFilters.dateFilter);
+  }
+}
+
+// Navigate to previous day
+function navigateDatePrev(){
+  // Deactivate "All" button if active
+  const dateAllBtn = el('dateAll');
+  if(dateAllBtn && dateAllBtn.classList.contains('active')){
+    dateAllBtn.classList.remove('active');
+  }
+  
+  if(currentFilters.dateFilter === null){
+    // If "All" is selected, start from today
+    currentFilters.dateFilter = getTodayIST();
+  } else {
+    currentFilters.dateFilter = addDays(currentFilters.dateFilter, -1);
+  }
+  updateDateDisplay();
+  applyFilters();
+}
+
+// Navigate to next day
+function navigateDateNext(){
+  // Deactivate "All" button if active
+  const dateAllBtn = el('dateAll');
+  if(dateAllBtn && dateAllBtn.classList.contains('active')){
+    dateAllBtn.classList.remove('active');
+  }
+  
+  if(currentFilters.dateFilter === null){
+    // If "All" is selected, start from today
+    currentFilters.dateFilter = getTodayIST();
+  } else {
+    currentFilters.dateFilter = addDays(currentFilters.dateFilter, 1);
+  }
+  updateDateDisplay();
+  applyFilters();
 }
 
 // Search and filter functions
@@ -199,18 +272,11 @@ function applyFilters(){
                      labString.includes(searchTerm);
     }
     
-    // Date filter - filter by today/tomorrow/all
+    // Date filter - filter by selected date or show all
     let matchesDate = true;
-    if (dateFilter !== 'all') {
+    if (dateFilter !== null) {
       const itemDate = getDateStringIST(item.epoch);
-      let targetDate;
-      
-      if (dateFilter === 'today') {
-        targetDate = formatDateIST(getTodayIST());
-      } else if (dateFilter === 'tomorrow') {
-        targetDate = formatDateIST(getTomorrowIST());
-      }
-      
+      const targetDate = formatDateIST(dateFilter);
       matchesDate = itemDate === targetDate;
     }
     
@@ -285,18 +351,16 @@ function renderFilteredTables(){
 }
 
 function clearFilters(){
-  currentFilters = { search: '', dateFilter: 'today' };
+  currentFilters = { search: '', dateFilter: getTodayIST() };
   el('searchInput').value = '';
   
   // Reset date slider to 'today'
-  const dateButtons = document.querySelectorAll('.date-slider-btn');
-  dateButtons.forEach(btn => {
-    btn.classList.remove('active');
-    if(btn.dataset.date === 'today'){
-      btn.classList.add('active');
-    }
-  });
+  const dateAllBtn = el('dateAll');
+  if(dateAllBtn){
+    dateAllBtn.classList.remove('active');
+  }
   
+  updateDateDisplay();
   filteredData = [...attendanceData];
   applyFilters();
 }
@@ -536,6 +600,10 @@ document.addEventListener('DOMContentLoaded', ()=> {
   initTheme();
   initNotifications();
   
+  // Initialize date filter to today
+  currentFilters.dateFilter = getTodayIST();
+  updateDateDisplay();
+  
   // Basic controls
   el('refreshBtn').addEventListener('click', reloadData);
   el('clearBtn').addEventListener('click', clearLogs);
@@ -568,19 +636,31 @@ document.addEventListener('DOMContentLoaded', ()=> {
     applyFilters();
   });
   
-  // Date filter slider
-  const dateButtons = document.querySelectorAll('.date-slider-btn');
-  dateButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      // Remove active class from all buttons
-      dateButtons.forEach(b => b.classList.remove('active'));
-      // Add active class to clicked button
-      btn.classList.add('active');
-      // Update filter
-      currentFilters.dateFilter = btn.dataset.date;
+  // Date filter - All button
+  const dateAllBtn = el('dateAll');
+  if(dateAllBtn){
+    dateAllBtn.addEventListener('click', () => {
+      dateAllBtn.classList.toggle('active');
+      if(dateAllBtn.classList.contains('active')){
+        currentFilters.dateFilter = null; // Show all
+      } else {
+        currentFilters.dateFilter = getTodayIST(); // Default to today
+      }
+      updateDateDisplay();
       applyFilters();
     });
-  });
+  }
+  
+  // Date navigation arrows
+  const datePrevBtn = el('datePrev');
+  if(datePrevBtn){
+    datePrevBtn.addEventListener('click', navigateDatePrev);
+  }
+  
+  const dateNextBtn = el('dateNext');
+  if(dateNextBtn){
+    dateNextBtn.addEventListener('click', navigateDateNext);
+  }
   
   el('clearFilters').addEventListener('click', clearFilters);
   

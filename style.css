@@ -424,16 +424,13 @@ html, body {
 
 .date-slider {
   display: flex;
-  gap: 0;
-  border: 1px solid var(--border);
-  border-radius: 0;
-  overflow: hidden;
+  gap: var(--space-sm);
+  align-items: center;
 }
 
 .date-slider-btn {
   padding: var(--space-sm) var(--space-md);
-  border: none;
-  border-right: 1px solid var(--border);
+  border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text);
   font-size: 12px;
@@ -442,10 +439,6 @@ html, body {
   text-transform: uppercase;
   cursor: pointer;
   transition: all 0.2s ease;
-}
-
-.date-slider-btn:last-child {
-  border-right: none;
 }
 
 .date-slider-btn:hover {
@@ -458,6 +451,52 @@ html, body {
   border-color: var(--black);
 }
 
+.date-navigator {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.date-arrow-btn {
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  border-right: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+
+.date-arrow-btn:last-child {
+  border-right: none;
+  border-left: 1px solid var(--border);
+}
+
+.date-arrow-btn:hover {
+  background: var(--gray-light);
+}
+
+.date-display {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  min-width: 120px;
+  text-align: center;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
 .dark-theme .date-slider-btn.active {
   background: var(--black);
   color: var(--white);
@@ -465,6 +504,10 @@ html, body {
 }
 
 .dark-theme .date-slider-btn:hover {
+  background: var(--gray-dark);
+}
+
+.dark-theme .date-arrow-btn:hover {
   background: var(--gray-dark);
 }
 
@@ -964,6 +1007,8 @@ html, body {
   .date-slider {
     width: 100%;
     display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
   }
   
   .date-slider-btn {
@@ -971,6 +1016,25 @@ html, body {
     padding: var(--space-md);
     font-size: 12px;
     min-height: 48px;
+    width: 100%;
+  }
+  
+  .date-navigator {
+    width: 100%;
+    display: flex;
+  }
+  
+  .date-arrow-btn {
+    padding: var(--space-md);
+    min-width: 48px;
+    min-height: 48px;
+  }
+  
+  .date-display {
+    flex: 1;
+    padding: var(--space-md);
+    min-height: 48px;
+    font-size: 12px;
   }
   
   .filter-btn {
